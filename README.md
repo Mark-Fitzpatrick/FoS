@@ -4,21 +4,22 @@ README.md
 Solar System Feat of Strength 
 
 My implementation of the Solar System is in 3D and runs in a Google Chrome 
-web browser.  I developed the code on my MacBook Pro, but it should also work
-on various flavors of Unix provided a current version of the Google Chrome web
-browser is installed.  In particular, I was using Google Chrome Version 63.0.3239.132 (Official Build) (64-bit).
+web browser.  I developed the code on my MacBook Pro, but it also works
+on MicroSoft Windows and various flavors of Unix provided a current version of
+the Google Chrome web browser is installed.  In particular, I was using Google
+Chrome Version 63.0.3239.132 (Official Build) (64-bit) on my Mac.
 
 
 The planets look good on my 23.5 inch (1920 x 1080) monitor.
 
 The source is organized as follows:
 
-/FoS contains this README.md file and two subdirectories:
+/FoS-master contains this README.md file and two subdirectories:
  FoS and libs.
 
-/FoS/FoS contains planet_model.js and planets.html
+/FoS-master/FoS contains planet_model.js and planets.html
 
-/FoS/libs contains the necessary libs for working with
+/FoS-master/libs contains the necessary libs for working with
 WebGL and three.js
 
 
@@ -27,7 +28,7 @@ To start, copy the FoS directory and its content to a convenient
 place on your computer, such as the Desktop.
 
 Start your Chrome Browser, and open the file planets.html from the
-/FoS/FoS directory.
+/FoS-master/FoS directory.
 
 
 
