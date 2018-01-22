@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<! -- File: planets.html     Mark Fitzpatrick -->
+<html>
+
+<head>
+    <title>Solar System</title>
+    <script type="text/javascript" src="../libs/three.js"></script>
+    <script type="text/javascript" src="../libs/stats.js"></script>
+    <script type="text/javascript" src="../libs/dat.gui.js"></script>
+    <script type="text/javascript" src="planet_model.js"></script>
+    <style>
+        body {
+            /* set margin to 0 and overflow to hidden, to go fullscreen */
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<! -- body>
+<div id="Stats-output">
+</div>
+<!-- Div which will hold the Output -->
+<div id="WebGL-output">
+</div>
+
+<!-- Div which will hold the Output -->
+<div id="WebGL-output">
+</div>
+
+<!-- Javascript code that runs Three.js -->
+<script type="text/javascript">
+
+    // once everything is loaded, we run our Three.js stuff.
+
+    // Mercury
+    var mercuryMinX =  1000;
+    var mercuryMinY =  1000;
+    var mercuryMinZ =  1000;
+    var mercuryMaxX = -1000;
+    var mercuryMaxY = -1000;
+    var mercuryMaxZ = -1000;
+
+    // Venus
+    var venusMinX =  1000;
+    var venusMinY =  1000;
+    var venusMinZ =  1000;
+    var venusMaxX = -1000;
+    var venusMaxY = -1000;
+    var venusMaxZ = -1000;
+
+    // Earth
+    var earthMinX =  1000;
+    var earthMinY =  1000;
+    var earthMinZ =  1000;
+    var earthMaxX = -1000;
+    var earthMaxY = -1000;
+    var earthMaxZ = -1000;
+
+    // Mars
+    var marsMinX =  1000;
+    var marsMinY =  1000;
+    var marsMinZ =  1000;
+    var marsMaxX = -1000;
+    var marsMaxY = -1000;
+    var marsMaxZ = -1000;
+
+    // Jupiter
+    var jupiterMinX =  1000;
+    var jupiterMinY =  1000;
+    var jupiterMinZ =  1000;
+    var jupiterMaxX = -1000;
+    var jupiterMaxY = -1000;
+    var jupiterMaxZ = -1000;
+
+    // Saturn
+    var saturnMinX =  1000;
+    var saturnMinY =  1000;
+    var saturnMinZ =  1000;
+    var saturnMaxX = -1000;
+    var saturnMaxY = -1000;
+    var saturnMaxZ = -1000;
+
+    // Uranus
+    var uranusMinX =  1000;
+    var uranusMinY =  1000;
+    var uranusMinZ =  1000;
+    var uranusMaxX = -1000;
+    var uranusMaxY = -1000;
+    var uranusMaxZ = -1000;
+
+    // Neptune
+    var neptuneMinX = 1000;
+    var neptuneMinY = 1000;
+    var neptuneMinZ = 1000;
+    var neptuneMaxX = -1000;
+    var neptuneMaxY = -1000;
+    var neptuneMaxZ = -1000;
+
+
+
+    function init() {
+
+        var stats = initStats();
+
+        // create a scene, that will hold all our elements such as
+        //  objects, cameras and lights.
+        var scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+
+        // fov - camera frustum vertical field of view (45)
+        // apsect - camera frustum aspect ratio ( width / height )
+        // near - camera frustum near plane  (0.1)
+        // far - camera frustum far plane    (1000)
+
+        // original
+        // var camera = new THREE.PerspectiveCamera(45,
+        //              window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        var camera = new THREE.PerspectiveCamera(45,
+                     window.innerWidth / window.innerHeight, 0.1, 500);
+
+
+        // create a render and set the size
+        var renderer = new THREE.WebGLRenderer();
+        
+        // color and opacity
+        renderer.setClearColor(new THREE.Color(0x0, 1.0)); // clear to black
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMapEnabled = false;
+        // renderer.shadowMapEnabled = true;
+
+
+        var sunRadius     = 5.0;  // 109 * size of earth
+
+        // NOTE: although 109 is the correct value, this causes the
+        //       smallest planets to be to small so using 50 instead.
+        var earthRadius   = sunRadius / 25.0;  
+
+        var mercuryRadius =  0.38 * earthRadius; 
+        var venusRadius   =  0.95 * earthRadius;
+        var marsRadius    =  0.53 * earthRadius;
+        var jupiterRadius = 11.19 * earthRadius;
+        var saturnRadius  =  9.40 * earthRadius;
+        var uranusRadius  =  4.04 * earthRadius;
+        var neptuneRadius =  3.88 * earthRadius;
+
+
+
+        // define the Sphere geometries
+        // https://threejs.org/docs/#api/geometries/SphereGeometry
+        // Parameters are (radius, widthSegments, heightSegments)
+        //
+        var sunGeometry     = new THREE.SphereGeometry(sunRadius,     20, 20);
+        var mercuryGeometry = new THREE.SphereGeometry(mercuryRadius, 20, 20); 
+        var venusGeometry   = new THREE.SphereGeometry(venusRadius,   20, 20); 
+        var earthGeometry   = new THREE.SphereGeometry(earthRadius,   20, 20); 
+        var marsGeometry    = new THREE.SphereGeometry(marsRadius,    20, 20); 
+        var jupiterGeometry = new THREE.SphereGeometry(jupiterRadius, 20, 20); 
+        var saturnGeometry  = new THREE.SphereGeometry(saturnRadius,  20, 20); 
+        var uranusGeometry  = new THREE.SphereGeometry(uranusRadius,  20, 20); 
+        var neptuneGeometry = new THREE.SphereGeometry(neptuneRadius, 20, 20); 
+
+
+        var sunMaterial     = new THREE.MeshLambertMaterial({color: 0xe8631b});
+        var sun             = new THREE.Mesh(sunGeometry, sunMaterial);
+
+        var mercuryMaterial = new THREE.MeshLambertMaterial({color: 0xc148ff});
+        var mercury         = new THREE.Mesh(mercuryGeometry, mercuryMaterial);
+
+        var venusMaterial   = new THREE.MeshLambertMaterial({color: 0xff8c00});
+        var venus           = new THREE.Mesh(venusGeometry, venusMaterial);
+
+        var earthMaterial   = new THREE.MeshLambertMaterial({color: 0x0000ff});
+        var earth           = new THREE.Mesh(earthGeometry, earthMaterial);
+
+        var marsMaterial    = new THREE.MeshLambertMaterial({color: 0xff1111});
+        var mars            = new THREE.Mesh(marsGeometry, marsMaterial);
+
+        var jupiterMaterial = new THREE.MeshLambertMaterial({color: 0xc8b38e});
+        var jupiter         = new THREE.Mesh(jupiterGeometry, jupiterMaterial);
+
+        var saturnMaterial  = new THREE.MeshLambertMaterial({color: 0xbbaa22});
+        var saturn          = new THREE.Mesh(saturnGeometry, saturnMaterial);
+
+        var uranusMaterial  = new THREE.MeshLambertMaterial({color: 0x60d1e9});
+        var uranus          = new THREE.Mesh(uranusGeometry, uranusMaterial);
+
+        var neptuneMaterial = new THREE.MeshLambertMaterial({color: 0x0000ff});
+        var neptune         = new THREE.Mesh(neptuneGeometry, neptuneMaterial);
+
+
+        // position the Sun and add to the scene
+        sun.position.x = 0;
+        sun.position.y = 0; 
+        sun.position.z = 0;  
+        sun.castShadow = false;
+        scene.add(sun);
+
+
+        mercury.castShadow = false;
+        scene.add(mercury);
+
+        venus.castShadow = false; 
+        scene.add(venus);
+
+        earth.castShadow = false;
+        scene.add(earth);
+
+        mars.castShadow = false;
+        scene.add(mars);
+
+        jupiter.castShadow = false;
+        scene.add(jupiter);
+
+        saturn.castShadow = false;
+        scene.add(saturn);
+
+        uranus.castShadow = false;
+        scene.add(uranus);
+
+        neptune.castShadow = false;
+        scene.add(neptune);
+
+
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 50;
+        camera.lookAt(scene.position);
+
+
+
+        // add spotlight for the shadows
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(0, 0, 50);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+        var spotLight2 = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(0, 0, 100);
+        spotLight.castShadow = true;
+        scene.add(spotLight2);
+
+
+
+        // add the output of the renderer to the html element
+        document.getElementById("WebGL-output").appendChild(renderer.domElement);
+
+        // call the render function
+        var step = 0;
+        var start_date = compute_test_date(2000, 1, 1); // January 1, 2000
+        var display = false;
+
+        var controls = new function () {
+            this.speed = 1.0;
+            this.reverse = false;
+        }
+
+        var gui = new dat.GUI();
+        gui.add(controls, 'speed', 0.125, 8.0);
+        gui.add(controls, 'reverse');
+
+
+        renderScene();
+
+        function renderScene() {
+            stats.update();
+
+            // Move Mercury
+            mercury_data = mercury_model(start_date + step,
+                                         sunRadius, mercuryRadius);
+
+            mercury.position.x = mercury_data[0];
+            mercury.position.y = mercury_data[1];
+            mercury.position.z = mercury_data[2];
+
+            if (mercury.position.x < mercuryMinX)
+            {
+                mercuryMinX = mercury.position.x;
+                display = true;
+            }
+
+            if (mercury.position.x > mercuryMaxX)
+            {
+                mercuryMaxX = mercury.position.x;
+                display = true;
+            }
+
+            if (mercury.position.y < mercuryMinY)
+            {
+                mercuryMinY = mercury.position.y;
+                display = true;
+            }
+
+            if (mercury.position.y > mercuryMaxY)
+            {
+                mercuryMaxY = mercury.position.y;
+                display = true;
+            }
+
+            if (mercury.position.z < mercuryMinZ)
+            {
+                mercuryMinZ = mercury.position.z;
+                display = true;
+            }
+
+            if (mercury.position.z > mercuryMaxZ)
+            {
+                mercuryMaxZ = mercury.position.z;
+                display = true;
+            }
+
+            if (display) {
+                console.log("Mercury x: " + mercuryMinX + " , " + mercuryMaxX);
+                console.log("Mercury y: " + mercuryMinY + " , " + mercuryMaxY);
+                console.log("Mercury z: " + mercuryMinZ + " , " + mercuryMaxZ);
+                display = false;
+            }
+
+            // Move Venus
+            venus_data = venus_model(start_date + step,
+                                     sunRadius, venusRadius);
+
+            venus.position.x = venus_data[0];
+            venus.position.y = venus_data[1];
+            venus.position.z = venus_data[2];
+
+            display = false;
+            if (venus.position.x < venusMinX)
+            {
+                venusMinX = venus.position.x;
+                display = true;
+            }
+
+            if (venus.position.x > venusMaxX)
+            {
+                venusMaxX = venus.position.x;
+                display = true;
+            }
+
+            if (venus.position.y < venusMinY)
+            {
+                venusMinY = venus.position.y;
+                display = true;
+            }
+
+            if (venus.position.y > venusMaxY)
+            {
+                venusMaxY = venus.position.y;
+                display = true;
+            }
+
+            if (venus.position.z < venusMinZ)
+            {
+                venusMinZ = venus.position.z;
+                display = true;
+            }
+
+            if (venus.position.z > venusMaxZ)
+            {
+                venusMaxZ = venus.position.z;
+                display = true;
+            }
+
+            if (display) {
+                 console.log("Venus x: " + venusMinX + " , " + venusMaxX);
+                 console.log("Venus y: " + venusMinY + " , " + venusMaxY);
+                 console.log("Venus z: " + venusMinZ + " , " + venusMaxZ);
+                 display = false;
+            }
+
+
+            // Move Earth
+            earth_data = earth_model(start_date + step, 
+                                     sunRadius, earthRadius);
+
+            earth.position.x = earth_data[0];
+            earth.position.y = earth_data[1];
+            earth.position.z = earth_data[2];
+
+            display = false;
+            if (earth.position.x < earthMinX)
+            {
+                earthMinX = earth.position.x;
+                display = true;
+            }
+
+            if (earth.position.x > earthMaxX)
+            {
+                earthMaxX = earth.position.x;
+                display = true;
+            }
+
+            if (earth.position.y < earthMinY)
+            {
+                earthMinY = earth.position.y;
+                display = true;
+            }
+
+            if (earth.position.y > earthMaxY)
+            {
+                earthMaxY = earth.position.y;
+                display = true;
+            }
+
+            if (earth.position.z < earthMinZ)
+            {
+                earthMinZ = earth.position.z;
+                display = true;
+            }
+
+            if (earth.position.z > earthMaxZ)
+            {
+                earthMaxZ = earth.position.z;
+                display = true;
+            }
+
+            if (display) {
+                 console.log("Earth x: " + earthMinX + " , " + earthMaxX);
+                 console.log("Earth y: " + earthMinY + " , " + earthMaxY);
+                 console.log("Earth z: " + earthMinZ + " , " + earthMaxZ);
+                 display = false;
+            }
+
+
+            // Move Mars
+            mars_data = mars_model(start_date + step,
+                                   sunRadius, marsRadius);
+
+            mars.position.x = mars_data[0];
+            mars.position.y = mars_data[1];
+            mars.position.z = mars_data[2];
+
+            display = false;
+            if (mars.position.x < marsMinX)
+            {
+                marsMinX = mars.position.x;
+                display = true;
+            }
+
+            if (mars.position.x > marsMaxX)
+            {
+                marsMaxX = mars.position.x;
+                display = true;
+            }
+
+            if (mars.position.y < marsMinY)
+            {
+                marsMinY = mars.position.y;
+                display = true;
+            }
+
+            if (mars.position.y > marsMaxY)
+            {
+                marsMaxY = mars.position.y;
+                display = true;
+            }
+
+            if (mars.position.z < marsMinZ)
+            {
+                marsMinZ = mars.position.z;
+                display = true;
+            }
+
+            if (mars.position.z > marsMaxZ)
+            {
+                marsMaxZ = mars.position.z;
+                display = true;
+            }
+
+            if (display) {
+                 console.log("Mars x: " + marsMinX + " , " + marsMaxX);
+                 console.log("Mars y: " + marsMinY + " , " + marsMaxY);
+                 console.log("Mars z: " + marsMinZ + " , " + marsMaxZ);
+                 display = false;
+            }
+
+
+            // Move Jupiter
+            jupiter_data = jupiter_model(start_date + step,
+                                         sunRadius, jupiterRadius);
+
+            jupiter.position.x = jupiter_data[0];
+            jupiter.position.y = jupiter_data[1];
+            jupiter.position.z = jupiter_data[2];
+
+            display = false;
+            if (jupiter.position.x < jupiterMinX)
+            {
+                jupiterMinX = jupiter.position.x;
+                display = true;
+            }
+
+            if (jupiter.position.x > jupiterMaxX)
+            {
+                jupiterMaxX = jupiter.position.x;
+                display = true;
+            }
+
+            if (jupiter.position.y < jupiterMinY)
+            {
+                jupiterMinY = jupiter.position.y;
+                display = true;
+            }
+
+            if (jupiter.position.y > jupiterMaxY)
+            {
+                jupiterMaxY = jupiter.position.y;
+                display = true;
+            }
+
+            if (jupiter.position.z < jupiterMinZ)
+            {
+                jupiterMinZ = jupiter.position.z;
+                display = true;
+            }
+
+            if (jupiter.position.z > jupiterMaxZ)
+            {
+                jupiterMaxZ = jupiter.position.z;
+                display = true;
+            }
+
+            if (display) {
+                 console.log("Jupiter x: " + jupiterMinX + " , " + jupiterMaxX);
+                 console.log("Jupiter y: " + jupiterMinY + " , " + jupiterMaxY);
+                 console.log("Jupiter z: " + jupiterMinZ + " , " + jupiterMaxZ);
+                 display = false;
+            }
+
+
+            // Move Saturn 
+            saturn_data = saturn_model(start_date + step,
+                                       sunRadius, saturnRadius);
+
+            saturn.position.x = saturn_data[0];
+            saturn.position.y = saturn_data[1];
+            saturn.position.z = saturn_data[2];
+
+
+            display = false;
+            if (saturn.position.x < saturnMinX)
+            {
+                saturnMinX = saturn.position.x;
+                display = true;
+            }
+
+            if (saturn.position.x > saturnMaxX)
+            {
+                saturnMaxX = saturn.position.x;
+                display = true;
+            }
+
+            if (saturn.position.y < saturnMinY)
+            {
+                saturnMinY = saturn.position.y;
+                display = true;
+            }
+
+            if (saturn.position.y > saturnMaxY)
+            {
+                saturnMaxY = saturn.position.y;
+                display = true;
+            }
+
+            if (saturn.position.z < saturnMinZ)
+            {
+                saturnMinZ = saturn.position.z;
+                display = true;
+            }
+
+            if (saturn.position.z > saturnMaxZ)
+            {
+                saturnMaxZ = saturn.position.z;
+                display = true;
+            }
+
+            if (display) {
+                 console.log("Jupiter x: " + saturnMinX + " , " + saturnMaxX);
+                 console.log("Jupiter y: " + saturnMinY + " , " + saturnMaxY);
+                 console.log("Jupiter z: " + saturnMinZ + " , " + saturnMaxZ);
+                 display = false;
+            }
+
+ 
+            // Move Uranus
+            uranus_data = uranus_model(start_date + step,
+                                       sunRadius, uranusRadius);
+
+            uranus.position.x = uranus_data[0];
+            uranus.position.y = uranus_data[1]; 
+            uranus.position.z = uranus_data[2];
+
+            display = false;
+            if (uranus.position.x < uranusMinX)
+            {
+                uranusMinX = uranus.position.x;
+                display = true;
+            }
+
+            if (uranus.position.x > uranusMaxX)
+            {
+                uranusMaxX = uranus.position.x;
+                display = true;
+            }
+
+            if (uranus.position.y < uranusMinY)
+            {
+                uranusMinY = uranus.position.y;
+                display = true;
+            }
+
+            if (uranus.position.y > uranusMaxY)
+            {
+                uranusMaxY = uranus.position.y;
+                display = true;
+            }
+
+            if (uranus.position.z < uranusMinZ)
+            {
+                uranusMinZ = uranus.position.z;
+                display = true;
+            }
+
+            if (uranus.position.z > uranusMaxZ)
+            {
+                uranusMaxZ = uranus.position.z;
+                display = true;
+            }
+
+            if (display) {
+                 console.log("Uranus x: " + uranusMinX + " , " + uranusMaxX);
+                 console.log("Uranus y: " + uranusMinY + " , " + uranusMaxY);
+                 console.log("Uranus z: " + uranusMinZ + " , " + uranusMaxZ);
+                 display = false;
+            }
+
+            // Move Neptune
+            neptune_data = neptune_model(start_date + step,
+                                         sunRadius, neptuneRadius);
+
+            neptune.position.x = neptune_data[0];
+            neptune.position.y = neptune_data[1];
+            neptune.position.z = neptune_data[2];
+
+            display = false;
+            if (neptune.position.x < neptuneMinX)
+            {
+                neptuneMinX = neptune.position.x;
+                display = true;
+            }
+
+            if (neptune.position.x > neptuneMaxX)
+            {
+                neptuneMaxX = neptune.position.x;
+                display = true;
+            }
+
+            if (neptune.position.y < neptuneMinY)
+            {
+                neptuneMinY = neptune.position.y;
+                display = true;
+            }
+
+            if (neptune.position.y > neptuneMaxY)
+            {
+                neptuneMaxY = neptune.position.y;
+                display = true;
+            }
+
+            if (neptune.position.z < neptuneMinZ)
+            {
+                neptuneMinZ = neptune.position.z;
+                display = true;
+            }
+
+            if (neptune.position.z > neptuneMaxZ)
+            {
+                neptuneMaxZ = neptune.position.z;
+                display = true;
+            }
+
+            if (display) {
+                 console.log("Neptune x: " + neptuneMinX + " , " + neptuneMaxX);
+                 console.log("Neptune y: " + neptuneMinY + " , " + neptuneMaxY);
+                 console.log("Neptune z: " + neptuneMinZ + " , " + neptuneMaxZ);
+                 display = false;
+            }
+
+
+            // advance step
+            if (controls.reverse)
+            {
+                // reverse is backwards in time
+                step -= controls.speed;
+
+            } else {
+                // forward is normal
+                step += controls.speed;
+            }
+
+
+            // render using requestAnimationFrame
+            requestAnimationFrame(renderScene);
+            renderer.render(scene, camera);
+        }
+
+        function initStats() {
+
+            var stats = new Stats();
+
+            stats.setMode(0); // 0: fps, 1: ms
+
+            // Align top-left
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.left = '0px';
+            stats.domElement.style.top = '0px';
+
+
+            document.getElementById("Stats-output").appendChild(stats.domElement);
+
+            return stats;
+        }
+    }
+    window.onload = init;
+
+</script>
+</body>
+</html>
+
